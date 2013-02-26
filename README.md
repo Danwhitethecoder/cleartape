@@ -66,16 +66,16 @@ class UserForm < Cleartape::Form
   attr_reader :user
 
   step :basics do |s|
-    s.apply_validations User, :email, :phone, :uniqueness => false
+    s.apply_validations :user, [:email, :phone], :uniqueness => false 
   end
 
   step :details do |s|
-    s.apply_validations User, :sex, :age
+    s.apply_validations :user, [:sex, :age]
   end
 
   step :gizmo do |s|
-    s.apply_validations Gizmo, :name
-    s.validates :description, :presence => true, :length => { :minimum => 50, :maximum => 200 }
+    s.apply_validations :gizmo, [:name]
+    s.validates :user, :description, :presence => true, :length => { :minimum => 50, :maximum => 200 }
   end
 
   private
@@ -90,7 +90,7 @@ class UserForm < Cleartape::Form
     return unless last_step?
 
     @user = User.create!(attributes[:user])
-    @gizmo = Gizmo.create!(attributes[:user][:gizmo_attributes].merge(:user => @user))
+    @gizmo = Gizmo.create!(attributes[:gizmo].merge(:user => @user))
   end
 
 end
@@ -119,28 +119,30 @@ end
 The views for subsequent steps:
 
 ```haml
-= form_for @form, :as => :user do |form|
+= form_for @form do |form|
   -# preserves user input between steps and tracks current step
   = form.init
 
-  = form.text_field :email
-  = form.text_field :phone
+  = form.fields_for :user do |fields|
+    = fields.text_field :email
+    = fields.text_field :phone
   
   = form.submit
 ```
 
 ```haml
-= form_for @form, :as => :user do |form|
+= form_for @form do |form|
   = form.init
 
-  = form.select :sex, %w[male female other]
-  = form.text_field :age
+  = form.fields_for :user do |fields|
+    = fields.select :sex, %w[male female other]
+    = fields.text_field :age
 
   = form.submit
 ```
 
 ```haml
-= form_for @form, :as => :user do |form|
+= form_for @form do |form|
   = form.init
 
   = form.fields_for :gizmo do |fields|
