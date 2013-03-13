@@ -1,0 +1,16 @@
+%h1 New user
+
+= form_for @form do |form|
+  = form.fields_for :user do |fields|
+    = fields.label :email
+    = fields.text_field :email
+  
+    %br
+
+    = fields.label :phone
+    = fields.text_field :phone
+
+    %br
+
+  = form.submit
+

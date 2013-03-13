@@ -101,11 +101,11 @@ The controller:
 ```ruby
 class UsersController
   def new
-    @form = UserForm.new(params)
+    @form = UserForm.new(self, params)
   end
 
   def create
-    @form = UserForm.new(params)
+    @form = UserForm.new(self, params)
     if @form.save && @form.last_step?
       flash[:notice] = "Hurrah!"
       redirect_to user_url(@form.user)
