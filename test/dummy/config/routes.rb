@@ -1,7 +1,7 @@
 Dummy::Application.routes.draw do
 
-  root :to => "users#new"
-  resources :users, :only => [:new, :create]
+  root :to => "registrations#new"
+  resources :registrations, :only => [:new, :create]
 
 
   # Sample of regular route:
