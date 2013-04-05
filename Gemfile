@@ -5,8 +5,6 @@ gemspec
 group :development do
   gem 'rake'
   gem 'rspec'
-  gem 'pry'
-  gem 'pry-nav'
 
   platform :ruby do
     gem 'sqlite3'
@@ -17,6 +15,11 @@ group :development do
   end
 end
 
+group :development, :test do
+  gem 'pry'
+  gem 'pry-nav'
+end
+
 gem 'haml'
-gem 'jquery-rails'
+gem 'jquery-rails', :require => false
 
