@@ -5,6 +5,9 @@ class UsersControllerTest < ActionController::TestCase
 
   def test_get_new_user
     get :new
+
+    assert_template :new
+    # assert
   end
 end
 

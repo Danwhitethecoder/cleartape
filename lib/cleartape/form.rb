@@ -3,25 +3,35 @@ module Cleartape
   class Form
     class Name < ActiveModel::Name
       def self.build(klass)
-        # TODO fill in nils
+        partial_path = klass.new(nil).to_partial_path    # => 'foos_form'
+        param_key = klass.param_key(klass)               # => 'foo'
+        route_key = klass.route_key(klass)               # => 'foos'
+        singular = param_key
+
         attributes = {
-          :cache_key => nil,
-          :collection => nil,
-          :element => nil,
-          :i18n_key => nil,
-          :param_key => Form.param_key(klass),
-          :partial_path => Form.new(nil).to_partial_path,
-          :plural => nil,
-          :route_key => Form.route_key(klass),
-          :singular => nil,
-          :singular_route_key => Form.route_key(klass).singularize
+          :element => singular,
+          :collection => singular.pluralize,
+          :param_key => param_key,
+          :partial_path => partial_path,
+          :route_key => route_key,
+          :i18n_key => "#{singular}_form".to_sym,
+          :cache_key => partial_path,
+          :singular => singular,
+          :singular_route_key => route_key.singularize,
+          :plural => singular.pluralize
         }
 
-        new(attributes)
+        new(klass, attributes)
       end
 
-      def initialize(attributes)
+      def initialize(klass, attributes)
+        self << klass.name
         attributes.each { |name, value| instance_variable_set("@#{name}", value) }
+      end
+
+      def human(options = {})
+        # TODO implement i18n
+        singular.capitalize
       end
     end
 
@@ -56,14 +66,30 @@ module Cleartape
       Name.build(self)
     end
 
+    def self.prevent_direct_use(exception_class = ArgumentError)
+      fail exception_class, "Cleartape::Form must not be used directly but subclassed"
+    end
+
     def self.route_key(record_or_class)
+      prevent_direct_use if [self.name, record_or_class.name].uniq.all? { |name| name == "Cleartape::Form" }
+
+      # TODO this seemes hackish and may not be neccessary
+      name = record_or_class.name
+      name = self.name if name == "Cleartape::Form"
+
       # TODO handle record for update action
-      ActiveSupport::Inflector.demodulize(record_or_class.name).sub(/Form$/, '').underscore.pluralize
+      ActiveSupport::Inflector.demodulize(name).sub(/Form$/, '').underscore.pluralize
     end
 
     def self.param_key(record_or_class)
+      prevent_direct_use if [self.name, record_or_class.name].uniq.all? { |name| name == "Cleartape::Form" }
+
+      # TODO this seemes hackish and may not be neccessary
+      name = record_or_class.name
+      name = self.name if name == "Cleartape::Form"
+
       # TODO handle record for update action
-      ActiveSupport::Inflector.demodulize(record_or_class.name).sub(/Form$/, '').underscore
+      ActiveSupport::Inflector.demodulize(name).sub(/Form$/, '').underscore
     end
 
     def to_partial_path
