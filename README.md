@@ -11,6 +11,10 @@ In a nutshell, `accepts_nested_attributes_for` tightly couples your View to your
 * Conditional validations make multistep forms easy without complicating model layer
 * Plays nicely with client_side_validations gem
 
+## Missing features
+
+* Direct support for nested attributes - at present nesting needs to be handled explicitly
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -121,7 +125,7 @@ The views for subsequent steps:
 ```haml
 = form_for @form do |form|
   -# preserves user input between steps and tracks current step
-  = form.init
+  = form.hidden_field :persistence_token
 
   = form.fields_for :user do |fields|
     = fields.text_field :email
@@ -132,7 +136,7 @@ The views for subsequent steps:
 
 ```haml
 = form_for @form do |form|
-  = form.init
+  = form.hidden_field :persistence_token
 
   = form.fields_for :user do |fields|
     = fields.select :sex, %w[male female other]
@@ -143,7 +147,7 @@ The views for subsequent steps:
 
 ```haml
 = form_for @form do |form|
-  = form.init
+  = form.hidden_field :persistence_token
 
   = form.fields_for :gizmo do |fields|
     = fields.text_field :name
