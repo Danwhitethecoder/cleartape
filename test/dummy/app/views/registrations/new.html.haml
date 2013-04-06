@@ -1,16 +1,30 @@
 %h1 New user
 
 = form_for @form do |form|
-  = form.fields_for :user do |fields|
-    = fields.label :email
-    = fields.text_field :email
-  
-    %br
 
-    = fields.label :phone
-    = fields.text_field :phone
+  - if @form.step? :user
+    = form.fields_for :user do |fields|
+      = fields.label :email
+      = fields.text_field :email
 
-    %br
+      %br
+
+      = fields.label :phone
+      = fields.text_field :phone
+
+      %br
+
+  - elsif @form.step? :address
+    = form.fields_for :address do |fields|
+      = fields.label :street_address
+      = fields.text_field :street_address
+
+      %br
+
+      = fields.label :city
+      = fields.text_field :city
+
+      %br
 
   = form.submit
 

@@ -2,7 +2,13 @@ require "test_helper"
 
 class FormTest < ActiveSupport::TestCase
 
-  class DummyForm < Cleartape::Form; end
+  class DummyForm < Cleartape::Form
+    attr_reader :dummy
+
+    step(:first) { }
+    step(:second) { }
+  end
+
   class DummiesController < ApplicationController; end
 
   include ActiveModel::Lint::Tests
