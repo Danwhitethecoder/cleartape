@@ -2,6 +2,7 @@
 
 require "cleartape/form/name"
 require "cleartape/form/step"
+require "cleartape/form/model"
 
 module Cleartape
   class Form
@@ -11,7 +12,7 @@ module Cleartape
     include ActiveAttr::BlockInitialization
     include ActiveAttr::MassAssignment
 
-    class_attribute :steps
+    class_attribute :steps, :model_names
 
     attr_reader :controller, :step, :params
 
@@ -21,6 +22,11 @@ module Cleartape
       @controller = controller
       @params = params
       @step = params.delete(:step).try(:to_sym) || self.class.steps.first.name
+
+      self.class.model_names.each do |model_name|
+        klass = Class.new(Model)
+        send("#{model_name}=", klass.new)
+      end
     end
 
     def errors
@@ -38,6 +44,11 @@ module Cleartape
 
     def to_param
       nil
+    end
+
+    def self.models(*names)
+      self.model_names = names
+      names.each { |name| attr_accessor(name) }
     end
 
     # Define new step

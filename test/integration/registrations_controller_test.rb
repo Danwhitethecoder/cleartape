@@ -26,17 +26,25 @@ class RegistrationsControllerTest < ActionController::TestCase
   end
 
   def test_post_to_create
-    post :create, :registration => {
-      :step => "user",
-      :user => {
-        :email => "zenon.benon@example.com",
-        :phone => "600600600",
-        :sex => "male",
-        :age => "51"
-      }
+    user_attrs = {
+      :email => "zenon.benon@example.com",
+      :phone => "600600600",
+      :sex => "male",
+      :age => "51"
     }
 
-    assert_equal :address, assigns(:form).step
+    post :create, :registration => {
+      :step => "user",
+      :user => user_attrs
+    }
+
+    form = assigns(:form)
+
+    assert_equal :address, form.step
+    assert_equal user_attrs[:email], form.user.email
+    assert_equal user_attrs[:phone], form.user.phone
+
+
     assert_template :new
 
     assert_tag :tag => "input", :attributes => { :type => "text",

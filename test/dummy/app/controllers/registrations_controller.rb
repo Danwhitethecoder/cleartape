@@ -2,7 +2,7 @@ class RegistrationsController < ApplicationController
 
   class RegistrationForm < Cleartape::Form
 
-    attr_reader :user, :address
+    models :user, :address
 
     step :user do |s|
     end

@@ -67,7 +67,7 @@ The form itself:
 ```ruby
 class UserForm < Cleartape::Form
 
-  attr_reader :user
+  models :user
 
   step :basics do |s|
     s.apply_validations :user, [:email, :phone], :uniqueness => false 
