@@ -3,7 +3,7 @@ require "test_helper"
 class FormTest < ActiveSupport::TestCase
 
   class DummyForm < Cleartape::Form
-    models :dummy
+    models :user
 
     step(:first) { }
     step(:second) { }

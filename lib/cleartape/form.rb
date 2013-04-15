@@ -12,7 +12,7 @@ module Cleartape
     include ActiveAttr::BlockInitialization
     include ActiveAttr::MassAssignment
 
-    class_attribute :steps, :model_names
+    class_attribute :steps, :model_definitions
 
     attr_reader :controller, :step, :params
 
@@ -23,10 +23,8 @@ module Cleartape
       @params = params
       @step = params.delete(:step).try(:to_sym) || self.class.steps.first.name
 
-      self.class.model_names.each do |model_name|
-        klass = Class.new(Model)
-        send("#{model_name}=", klass.new)
-      end
+      define_models
+      initialize_models(params) if params.present?
     end
 
     def errors
@@ -46,9 +44,28 @@ module Cleartape
       nil
     end
 
-    def self.models(*names)
-      self.model_names = names
-      names.each { |name| attr_accessor(name) }
+    def self.models(*definitions)
+      definitions.each do |definition|
+        name = definition.respond_to?(:first) ? definition.first : definition
+        klass = definition.respond_to?(:last) ? definition.last : nil
+
+        self.model(name, klass)
+      end
+    end
+
+    def self.model(name, klass = nil)
+      klass ||= "::#{name.to_s.classify}".constantize
+
+      # TODO add more specific constraints
+      raise "Cannot determine class for :#{name} object" unless klass.is_a?(Class)
+
+      self.model_definitions ||= []
+      self.model_definitions += [{
+        :name => name,
+        :class => klass
+      }]
+
+      attr_accessor(name)
     end
 
     # Define new step
@@ -129,6 +146,32 @@ module Cleartape
 
     def process
       raise NotImplementedError, "Form#process must be overriden by subclasses."
+    end
+
+    def define_models
+      self.class.model_definitions.each do |definition|
+        faux_class = Class.new(Model)
+
+        needless_attrs = %w(id created_at updated_at)
+        accessible_attrs = definition[:class].attribute_names.reject { |attr| needless_attrs.include?(attr) }
+
+        raise "No accessible attrs for :#{definition[:name]} defined!" if accessible_attrs.blank?
+
+        # TODO allow to override class name
+        accessible_attrs.each do |attr|
+          faux_class.attribute attr
+        end
+
+        send("#{definition[:name]}=", faux_class.new)
+      end
+    end
+
+    def initialize_models(params)
+      params = ActiveSupport::HashWithIndifferentAccess.new.update(params)
+      model_definitions.each do |definition|
+        model = send("#{definition[:name]}")
+        model.attributes = params[self.class.model_name.singular][definition[:name]]
+      end
     end
 
   end

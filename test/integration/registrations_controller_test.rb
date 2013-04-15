@@ -17,8 +17,8 @@ class RegistrationsControllerTest < ActionController::TestCase
 
     assert_tag :tag => "form", :attributes => form_tag_attributes
     assert_tag :tag => "input", :attributes => { :type => "text",
-                                                 :id => "registration_user_email",
-                                                 :name => "registration[user][email]" }
+                                                 :id => "registration_user_name",
+                                                 :name => "registration[user][name]" }
 
     assert_tag :tag => "input", :attributes => { :type => "text",
                                                  :id => "registration_user_phone",
@@ -27,7 +27,7 @@ class RegistrationsControllerTest < ActionController::TestCase
 
   def test_post_to_create
     user_attrs = {
-      :email => "zenon.benon@example.com",
+      :name => "Zenon Benon",
       :phone => "600600600",
       :sex => "male",
       :age => "51"
@@ -41,9 +41,8 @@ class RegistrationsControllerTest < ActionController::TestCase
     form = assigns(:form)
 
     assert_equal :address, form.step
-    assert_equal user_attrs[:email], form.user.email
+    assert_equal user_attrs[:name], form.user.name
     assert_equal user_attrs[:phone], form.user.phone
-
 
     assert_template :new
 

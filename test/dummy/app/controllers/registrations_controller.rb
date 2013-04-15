@@ -2,7 +2,7 @@ class RegistrationsController < ApplicationController
 
   class RegistrationForm < Cleartape::Form
 
-    models :user, :address
+    models :user, [:address, Address]
 
     step :user do |s|
     end
