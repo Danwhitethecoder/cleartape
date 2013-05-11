@@ -112,14 +112,11 @@ module Cleartape
     end
 
     def valid?
-      # construct model stubs with correct validations for current step
-
-      # validate
+      valid = models.all?(&:valid?)
 
       # populate errors collection if not valid
 
-      # return
-      return true
+      return valid
     end
 
     def save
@@ -172,6 +169,10 @@ module Cleartape
         model = send("#{definition[:name]}")
         model.attributes = params[self.class.model_name.singular][definition[:name]]
       end
+    end
+
+    def models
+      model_definitions.map { |definition| send("#{definition[:name]}") }
     end
 
   end
