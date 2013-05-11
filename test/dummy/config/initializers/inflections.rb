@@ -13,3 +13,9 @@
 # ActiveSupport::Inflector.inflections do |inflect|
 #   inflect.acronym 'RESTful'
 # end
+
+# Address -> addresses
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.plural /(.*)ss$/i, '\1sses'
+  inflect.singular /(.*)sses/i, '\1ss'
+end
