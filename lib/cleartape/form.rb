@@ -70,7 +70,7 @@ module Cleartape
 
     # Define new step
     def self.step(name, &block)
-      Step.new(name).tap do |step|
+      Step.new(name, model_definitions).tap do |step|
         self.steps = [] if steps.nil?
         self.steps += [step]
         yield step
@@ -147,17 +147,9 @@ module Cleartape
 
     def define_models
       self.class.model_definitions.each do |definition|
-        faux_class = Class.new(Model)
 
-        needless_attrs = %w(id created_at updated_at)
-        accessible_attrs = definition[:class].attribute_names.reject { |attr| needless_attrs.include?(attr) }
-
-        raise "No accessible attrs for :#{definition[:name]} defined!" if accessible_attrs.blank?
-
-        # TODO allow to override class name
-        accessible_attrs.each do |attr|
-          faux_class.attribute attr
-        end
+        current_step = self.class.steps.find { |s| s.name == step }
+        faux_class = current_step.faux_model_class(definition[:name])
 
         send("#{definition[:name]}=", faux_class.new)
       end
