@@ -11,7 +11,7 @@ class Cleartape::Form::StepTest < Cleartape::TestCase
     end
 
     should "allow to apply validations" do
-      @step.apply_validations(:user, [:email])
+      @step.apply_validations(:user, :email)
 
       validators = @step.faux_model_class(:user).validators
 
@@ -20,7 +20,7 @@ class Cleartape::Form::StepTest < Cleartape::TestCase
     end
 
     should "allow to ignore certain validations" do
-      @step.apply_validations(:user, [:age], :presence => false)
+      @step.apply_validations(:user, :age, :presence => false)
 
       validators = @step.faux_model_class(:user).validators
 

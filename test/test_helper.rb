@@ -27,7 +27,7 @@ class Cleartape::TestCase < ActiveSupport::TestCase
     end
 
     step(:details) do |step|
-      step.apply_validations :user, [:age, :sex, :phone]
+      step.apply_validations :user, :age, :sex, :phone
     end
   end
 

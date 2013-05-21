@@ -70,15 +70,15 @@ class UserForm < Cleartape::Form
   models :user
 
   step :basics do |s|
-    s.apply_validations :user, [:email, :phone], :uniqueness => false 
+    s.apply_validations :user, :email, :phone, :uniqueness => false 
   end
 
   step :details do |s|
-    s.apply_validations :user, [:sex, :age]
+    s.apply_validations :user, :sex, :age
   end
 
   step :gizmo do |s|
-    s.apply_validations :gizmo, [:name]
+    s.apply_validations :gizmo, :name
     s.validates :user, :description, :presence => true, :length => { :minimum => 50, :maximum => 200 }
   end
 
