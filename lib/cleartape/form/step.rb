@@ -14,9 +14,10 @@ module Cleartape
         @faux_model_classes = Hash.new
       end
 
-      def apply_validations(model_name, attributes)
+      def apply_validations(model_name, attributes, options = {})
         model_validators(model_name).select { |validator| (validator.attributes & attributes).present? }.each do |validator|
           next if IGNORED_VALIDATIONS.include?(validator.kind)
+          next if options[validator.kind] == false
 
           validator.attributes.each do |attribute|
             faux_model_class(model_name).validates *validator.attributes, validator.kind => validator.options.dup || true

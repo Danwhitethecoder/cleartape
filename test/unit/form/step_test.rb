@@ -16,11 +16,17 @@ class Cleartape::Form::StepTest < Cleartape::TestCase
       validators = @step.faux_model_class(:user).validators
 
       assert validators.present?, "Validators should be present"
-      assert validators.all? { |validator| validator.attributes.include?(:email) }, "Found unexpected validators"
+      assert validators.all? { |validator| validator.attributes.include?(:email) }, "Found unexpected validator for :email"
     end
 
     should "allow to ignore certain validations" do
-      fail NotImplementedError.new
+      @step.apply_validations(:user, [:age], :presence => false)
+
+      validators = @step.faux_model_class(:user).validators
+
+      assert validators.present?, "Validators should be present"
+      assert validators.all? { |validator| validator.attributes.include?(:age) }, "Found unexpected validator for :age"
+      assert validators.none? { |validator| :presence == validator.kind }, "Found unexpected :presence validator for :age"
     end
 
     should "allow to define custom validations" do
