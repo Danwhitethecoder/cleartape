@@ -22,6 +22,7 @@ class Cleartape::FormTest < Cleartape::TestCase
       assert_equal :name, form.step
       assert ! form.valid?, "Form should not be valid"
       assert form.user.errors[:name].present?, "There should be an error on :name attribute"
+      assert form.errors[:"user.name"].present?, "There should be an error on :user.name attribute"
     end
   end
 

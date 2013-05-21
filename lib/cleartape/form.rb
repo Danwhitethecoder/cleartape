@@ -28,7 +28,7 @@ module Cleartape
     end
 
     def errors
-      @errors || ActiveModel::Errors.new(self)
+      @errors ||= ActiveModel::Errors.new(self)
     end
 
     # Forms are never themselves persisted (yet)
@@ -114,7 +114,15 @@ module Cleartape
     def valid?
       valid = models.all?(&:valid?)
 
-      # populate errors collection if not valid
+      errors.clear
+      models.each do |model|
+        model.errors.each do |attribute, attribute_errors|
+          attribute_errors = Array.wrap(attribute_errors)
+          attribute_errors.each do |error|
+            errors.add :"#{model.class.name.demodulize.underscore}.#{attribute}", error
+          end
+        end
+      end
 
       return valid
     end
