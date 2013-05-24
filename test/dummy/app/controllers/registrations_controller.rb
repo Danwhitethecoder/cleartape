@@ -15,8 +15,8 @@ class RegistrationsController < ApplicationController
     def process
       return unless last_step?
 
-      user = User.create!(self.user.attributes)
-      address = Address.create!(self.user.attributes.merge(:user => user))
+      user = ::User.create!(self.user.attributes)
+      address = ::Address.create!(self.address.attributes.merge(:user => user, :name => user.name))
     end
   end
 
@@ -26,8 +26,6 @@ class RegistrationsController < ApplicationController
 
   def create
     @form = RegistrationForm.new(self, params)
-
-    # binding.pry
 
     if @form.valid?
       @form.save

@@ -20,8 +20,8 @@ module Cleartape
           next if IGNORED_VALIDATIONS.include?(validator.kind)
           next if options[validator.kind] == false
 
-          validator.attributes.each do |attribute|
-            faux_model_class(model_name).validates *validator.attributes, validator.kind => validator.options.dup || true
+          (validator.attributes & attributes).each do |attribute|
+            faux_model_class(model_name).validates attribute, validator.kind => validator.options.dup || true
           end
         end
       end

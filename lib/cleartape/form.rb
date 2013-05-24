@@ -27,8 +27,6 @@ module Cleartape
       @params = params
       @step = storage[:__step__].try(:to_sym) || self.class.steps.first.name
 
-      # binding.pry
-        
       storage.data.merge!(params[self.class.model_name.singular] || {})
 
       define_models
@@ -112,7 +110,7 @@ module Cleartape
     def save
       return false unless valid?
       process
-      storage.clear
+      storage.clear if last_step?
       return true
     end
 
@@ -152,7 +150,7 @@ module Cleartape
         model_name = definition[:name]
         model = send("#{model_name}")
         persisted_model_params = storage[model_name] || ActiveSupport::HashWithIndifferentAccess.new
-        model.attributes = persisted_model_params.merge(params[form_name][model_name] || {})
+        model.attributes = persisted_model_params.merge(params[self.class.model_name.singular][model_name] || {})
       end
     end
 
