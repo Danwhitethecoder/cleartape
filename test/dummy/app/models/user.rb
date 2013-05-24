@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_one :address
 
-  validates :email, :presence => true, :uniqueness => true
+  validates :name,  :presence => true, :uniqueness => true
   validates :phone, :presence => true
   validates :sex,   :inclusion => { :in => ["male", "female", "other"] }
   validates :age,   :presence => true,

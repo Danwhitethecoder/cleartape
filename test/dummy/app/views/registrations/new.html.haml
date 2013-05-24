@@ -2,6 +2,8 @@
 
 = form_for @form do |form|
 
+  = form.hidden_field :persistence_token
+
   - if @form.step? :user
     = form.fields_for :user do |fields|
       = fields.label :name
@@ -11,6 +13,28 @@
 
       = fields.label :phone
       = fields.text_field :phone
+
+      %br
+
+      = fields.label :age
+      = fields.text_field :age
+
+      %br
+
+      %fieldset
+        %legend Sex
+
+        = fields.label :sex, :value => "male" do
+          = fields.radio_button :sex, "male"
+          Male
+
+        = fields.label :sex, :value => "female" do
+          = fields.radio_button :sex, "female"
+          Female
+
+        = fields.label :sex, :value => "other" do
+          = fields.radio_button :sex, "other"
+          Other
 
       %br
 
@@ -26,5 +50,15 @@
 
       %br
 
-  = form.submit
+      = fields.label :country
+      = fields.text_field :country
+
+      %br
+
+      = fields.label :postcode
+      = fields.text_field :postcode
+
+      %br
+
+  = form.submit @form.step?(:user) ? "Next" : "Register"
 

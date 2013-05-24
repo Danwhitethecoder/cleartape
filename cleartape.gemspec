@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "sqlite3"
   gem.add_development_dependency "shoulda", "~> 3.5.0"
+  gem.add_development_dependency "capybara", "~> 2.1.0"
 end
 
 
