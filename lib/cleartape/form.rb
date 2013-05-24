@@ -23,18 +23,19 @@ module Cleartape
     def initialize(controller, params = {})
       raise NoStepsDefined, "It makes no sense with one step only" if self.class.steps.blank?
 
+      @form_name = self.class.model_name.singular
       @controller = controller
       @params = params
       @step = storage[:__step__].try(:to_sym) || self.class.steps.first.name
 
-      storage.data.merge!(params[self.class.model_name.singular] || {})
+      storage.data.merge!(params[@form_name] || {})
 
       define_models
       initialize_models if params.present?
     end
 
     def storage_key
-      @storage_key ||= @params.blank? ? SecureRandom.hex : @params[self.class.model_name.singular][:storage_key]
+      @storage_key ||= @params.blank? ? SecureRandom.hex : @params[@form_name][:storage_key]
     end
 
     def errors
@@ -150,7 +151,7 @@ module Cleartape
         model_name = definition[:name]
         model = send("#{model_name}")
         persisted_model_params = storage[model_name] || ActiveSupport::HashWithIndifferentAccess.new
-        model.attributes = persisted_model_params.merge(params[self.class.model_name.singular][model_name] || {})
+        model.attributes = persisted_model_params.merge(params[@form_name][model_name] || {})
       end
     end
 
