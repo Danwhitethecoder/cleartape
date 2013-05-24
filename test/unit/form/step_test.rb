@@ -7,16 +7,16 @@ class Cleartape::Form::StepTest < Cleartape::TestCase
 
   context "Cleartape::Form::Step" do
     setup do
-      @step = Cleartape::Form::Step.new(:email_step, [{ :name => :user, :class => ::User }])
+      @step = Cleartape::Form::Step.new(:name_step, [{ :name => :user, :class => ::User }])
     end
 
     should "allow to apply validations" do
-      @step.apply_validations(:user, :email)
+      @step.apply_validations(:user, :name)
 
       validators = @step.faux_model_class(:user).validators
 
       assert validators.present?, "Validators should be present"
-      assert validators.all? { |validator| validator.attributes.include?(:email) }, "Found unexpected validator for :email"
+      assert validators.all? { |validator| validator.attributes.include?(:name) }, "Found unexpected validator for :name"
     end
 
     should "allow to ignore certain validations" do
@@ -30,13 +30,13 @@ class Cleartape::Form::StepTest < Cleartape::TestCase
     end
 
     should "allow to define custom validations" do
-      @step.validates(:user, :email, :length => { :minimum => 6 })
+      @step.validates(:user, :name, :length => { :minimum => 6 })
 
       validators = @step.faux_model_class(:user).validators
 
       assert_equal 1, validators.size
       assert_equal ActiveModel::Validations::LengthValidator, validators.first.class
-      assert_equal [:email], validators.first.attributes
+      assert_equal [:name], validators.first.attributes
     end
   end
 end
