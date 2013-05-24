@@ -16,7 +16,7 @@ module Cleartape
       end
 
       def to_partial_path
-        [self.class.route_key(self.class), "form"].join("_")
+        self.class.partial_path(self.class)
       end
 
       module ClassMethods
@@ -40,6 +40,10 @@ module Cleartape
 
           # TODO handle record for update action
           ActiveSupport::Inflector.demodulize(name).sub(/Form$/, '').underscore
+        end
+
+        def partial_path(record_or_class)
+          [route_key(record_or_class), "form"].join("_")
         end
       end
     end

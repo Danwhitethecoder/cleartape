@@ -5,7 +5,7 @@ module Cleartape
     class Name < ActiveModel::Name
 
       def self.build(klass)
-        partial_path = klass.new(nil).to_partial_path    # => 'foos_form'
+        partial_path = klass.partial_path(klass)         # => 'foos_form'
         param_key = klass.param_key(klass)               # => 'foo'
         route_key = klass.route_key(klass)               # => 'foos'
         singular = param_key
