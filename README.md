@@ -125,7 +125,7 @@ The views for subsequent steps:
 ```haml
 = form_for @form do |form|
   -# preserves user input between steps and tracks current step
-  = form.hidden_field :persistence_token
+  = form.hidden_field :storage_key
 
   = form.fields_for :user do |fields|
     = fields.text_field :email

@@ -5,7 +5,7 @@ module Cleartape
     class Storage
       def initialize(form)
         @form_name = form.class.model_name.singular
-        @storage_key = form.persistence_token
+        @storage_key = form.storage_key
         @session = form.controller.session
       end
 

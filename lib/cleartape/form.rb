@@ -33,12 +33,8 @@ module Cleartape
       initialize_models if params.present?
     end
 
-    def persistence_token
-      @persistence_token ||= @params.blank? ? SecureRandom.hex : @params[self.class.model_name.singular][:persistence_token]
-    end
-
-    def storage
-      Storage.new(self)
+    def storage_key
+      @storage_key ||= @params.blank? ? SecureRandom.hex : @params[self.class.model_name.singular][:storage_key]
     end
 
     def errors
@@ -129,6 +125,10 @@ module Cleartape
     end
 
     private
+
+    def storage
+      Storage.new(self)
+    end
 
     def process
       raise NotImplementedError, "Form#process must be overriden by subclasses."

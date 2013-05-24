@@ -2,7 +2,7 @@
 
 = form_for @form do |form|
 
-  = form.hidden_field :persistence_token
+  = form.hidden_field :storage_key
 
   - if @form.step? :user
     = form.fields_for :user do |fields|
