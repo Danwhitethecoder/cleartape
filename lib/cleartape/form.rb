@@ -4,6 +4,7 @@ require "cleartape/form/name"
 require "cleartape/form/naming"
 require "cleartape/form/step"
 require "cleartape/form/model"
+require "cleartape/form/storage"
 
 module Cleartape
   class Form
@@ -26,24 +27,20 @@ module Cleartape
       @params = params
       @step = storage[:__step__].try(:to_sym) || self.class.steps.first.name
 
-      storage.merge!(params[self.class.model_name.singular] || {})
+      # binding.pry
+        
+      storage.data.merge!(params[self.class.model_name.singular] || {})
 
       define_models
       initialize_models if params.present?
     end
 
     def persistence_token
-      @persistence_token ||= @params[:persistence_token] || SecureRandom.hex
+      @persistence_token ||= @params.blank? ? SecureRandom.hex : @params[self.class.model_name.singular][:persistence_token]
     end
 
     def storage
-      # HACK Form is instantiated as a helper for Name class but it should
-      # not be neccessary
-      return {} unless controller
-      controller.session[:__cleartape__] ||= {}
-      controller.session[:__cleartape__][persistence_token] ||= ActiveSupport::HashWithIndifferentAccess.new
-      controller.session[:__cleartape__][persistence_token][self.class.model_name.singular] ||= ActiveSupport::HashWithIndifferentAccess.new
-      return controller.session[:__cleartape__][persistence_token][self.class.model_name.singular]
+      Storage.new(self)
     end
 
     def errors
@@ -115,7 +112,7 @@ module Cleartape
     def save
       return false unless valid?
       process
-      controller.session[:__cleartape__].delete(persistence_token)
+      storage.clear
       return true
     end
 

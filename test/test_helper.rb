@@ -36,7 +36,12 @@ class Cleartape::TestCase < ActiveSupport::TestCase
     end
   end
 
-  class DummiesController < ApplicationController; end
+  class DummiesController < ApplicationController
+    def initialize(*args, &block)
+      super
+      @_request = ActionDispatch::TestRequest.new
+    end
+  end
 
   def form
     @form ||= DummyForm.new(DummiesController.new)
