@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require "cleartape/form/name"
+require "cleartape/form/naming"
 require "cleartape/form/step"
 require "cleartape/form/model"
 
@@ -11,6 +12,8 @@ module Cleartape
     include ActiveAttr::Attributes
     include ActiveAttr::BlockInitialization
     include ActiveAttr::MassAssignment
+
+    include Cleartape::Form::Naming
 
     class_attribute :steps, :model_definitions
 
@@ -34,14 +37,6 @@ module Cleartape
     # Forms are never themselves persisted (yet)
     def persisted?
       false
-    end
-
-    def to_key
-      nil
-    end
-
-    def to_param
-      nil
     end
 
     def self.models(*definitions)
@@ -83,32 +78,6 @@ module Cleartape
 
     def self.prevent_direct_use(exception_class = ArgumentError)
       fail exception_class, "Cleartape::Form must not be used directly but subclassed"
-    end
-
-    def self.route_key(record_or_class)
-      prevent_direct_use if [self.name, record_or_class.name].uniq.all? { |name| name == "Cleartape::Form" }
-
-      # TODO this seemes hackish and may not be neccessary
-      name = record_or_class.name
-      name = self.name if name == "Cleartape::Form"
-
-      # TODO handle record for update action
-      ActiveSupport::Inflector.demodulize(name).sub(/Form$/, '').underscore.pluralize
-    end
-
-    def self.param_key(record_or_class)
-      prevent_direct_use if [self.name, record_or_class.name].uniq.all? { |name| name == "Cleartape::Form" }
-
-      # TODO this seemes hackish and may not be neccessary
-      name = record_or_class.name
-      name = self.name if name == "Cleartape::Form"
-
-      # TODO handle record for update action
-      ActiveSupport::Inflector.demodulize(name).sub(/Form$/, '').underscore
-    end
-
-    def to_partial_path
-      [self.class.route_key(self.class), "form"].join("_")
     end
 
     def valid?
