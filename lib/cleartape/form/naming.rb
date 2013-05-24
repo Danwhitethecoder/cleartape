@@ -45,6 +45,14 @@ module Cleartape
         def partial_path(record_or_class)
           [route_key(record_or_class), "form"].join("_")
         end
+
+        def i18n_scope
+          :cleartape
+        end
+
+        def lookup_ancestors
+          [self]
+        end
       end
     end
   end

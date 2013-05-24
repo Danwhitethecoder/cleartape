@@ -1,11 +1,16 @@
-%h1 New user
+%h1= @form.step?(:user) ? "User details" : "User address"
 
-= form_for @form do |form|
+= form_for @form do |f|
 
-  = form.hidden_field :storage_key
+  = f.hidden_field :storage_key
+
+  - unless @form.valid?
+    %ul
+      - @form.errors.full_messages.each do |message|
+        %li= message
 
   - if @form.step? :user
-    = form.fields_for :user do |fields|
+    = f.fields_for :user do |fields|
       = fields.label :name
       = fields.text_field :name
 
@@ -39,7 +44,7 @@
       %br
 
   - elsif @form.step? :address
-    = form.fields_for :address do |fields|
+    = f.fields_for :address do |fields|
       = fields.label :street_address
       = fields.text_field :street_address
 
@@ -60,5 +65,5 @@
 
       %br
 
-  = form.submit @form.step?(:user) ? "Next" : "Register"
+  = f.submit @form.step?(:user) ? "Next" : "Register"
 

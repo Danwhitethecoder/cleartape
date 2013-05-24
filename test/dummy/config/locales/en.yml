@@ -3,3 +3,12 @@
 
 en:
   hello: "Hello world"
+
+  cleartape:
+    attributes:
+      registration_form/user:
+        name: Name
+        phone: Phone number
+        sex: Sex
+        age: Age
+

@@ -3,36 +3,57 @@
 require "test_helper"
 
 class RegistrationTest < ActionDispatch::IntegrationTest
+
+  def fill_in_all(step, values)
+    values.each { |attr, value| fill_in "registration[#{step}][#{attr}]", :with => value }
+  end
+
   context "Registration" do
     should "be successful" do
       visit new_registration_path
-
-      assert page.has_content?("Name")
-      assert page.has_content?("Phone")
-      assert page.has_content?("Sex")
-      assert page.has_content?("Age")
+      assert page.has_content?("User details")
 
       page.within "#new_registration" do
-        fill_in "registration[user][name]", :with => "Zenon Benon"
-        fill_in "registration[user][phone]", :with => "600700800"
-        fill_in "registration[user][age]", :with => "33"
+        fill_in_all :user, :name => "Zenon Benon",
+                           :phone => "600700800",
+                           :age => "33"
         choose "registration_user_sex_male"
         click_button "Next"
       end
 
       assert_equal registrations_path, current_path
-      assert page.has_content?("Street address")
-      assert page.has_content?("City")
+      assert page.has_content?("User address")
 
       page.within "#new_registration" do
-        fill_in "registration[address][street_address]", :with => "Kwiatowa 666"
-        fill_in "registration[address][city]", :with => "Knurów"
-        fill_in "registration[address][country]", :with => "Polska"
-        fill_in "registration[address][postcode]", :with => "30-000"
+        fill_in_all :address, :street_address => "Kwiatowa 666",
+                              :city => "Knurów",
+                              :country => "Polska",
+                              :postcode => "300-00"
         click_button "Register"
       end
 
       assert_equal root_path, current_path
+    end
+
+    should "show validation messages" do
+      visit new_registration_path
+      assert page.has_content?("User details")
+
+      page.within "#new_registration" do
+        click_button "Next"
+      end
+
+      assert_equal registrations_path, current_path
+
+      assert page.has_content?("User details")
+      assert ! page.has_content?("User address")
+
+      assert page.has_content?("Name can't be blank")
+      assert page.has_content?("Phone number can't be blank")
+      assert page.has_content?("Sex is not included in the list")
+      assert page.has_content?("Age can't be blank")
+      assert page.has_content?("Age is not a number")
+
     end
   end
 end

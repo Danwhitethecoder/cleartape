@@ -14,7 +14,10 @@ module Cleartape
     include ActiveAttr::BlockInitialization
     include ActiveAttr::MassAssignment
 
+    extend ActiveModel::Translation
+
     include Cleartape::Form::Naming
+
 
     class_attribute :steps, :model_definitions
 
