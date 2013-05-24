@@ -19,15 +19,31 @@ module Cleartape
 
     attr_reader :controller, :step, :params
 
-    def initialize(controller, params = { })
+    def initialize(controller, params = {})
       raise NoStepsDefined, "It makes no sense with one step only" if self.class.steps.blank?
 
       @controller = controller
       @params = params
-      @step = params.delete(:step).try(:to_sym) || self.class.steps.first.name
+      @step = storage[:__step__].try(:to_sym) || self.class.steps.first.name
+
+      storage.merge!(params[self.class.model_name.singular] || {})
 
       define_models
-      initialize_models(params) if params.present?
+      initialize_models if params.present?
+    end
+
+    def persistence_token
+      @persistence_token ||= @params[:persistence_token] || SecureRandom.hex
+    end
+
+    def storage
+      # HACK Form is instantiated as a helper for Name class but it should
+      # not be neccessary
+      return {} unless controller
+      controller.session[:__cleartape__] ||= {}
+      controller.session[:__cleartape__][persistence_token] ||= ActiveSupport::HashWithIndifferentAccess.new
+      controller.session[:__cleartape__][persistence_token][self.class.model_name.singular] ||= ActiveSupport::HashWithIndifferentAccess.new
+      return controller.session[:__cleartape__][persistence_token][self.class.model_name.singular]
     end
 
     def errors
@@ -99,6 +115,7 @@ module Cleartape
     def save
       return false unless valid?
       process
+      controller.session[:__cleartape__].delete(persistence_token)
       return true
     end
 
@@ -113,7 +130,7 @@ module Cleartape
     def advance
       step_names = self.class.steps.map(&:name)
       idx = step_names.index(step)
-      @step = step_names[idx + 1]
+      @step = storage[:__step__] = step_names[idx + 1]
     end
 
     private
@@ -132,11 +149,13 @@ module Cleartape
       end
     end
 
-    def initialize_models(params)
-      params = ActiveSupport::HashWithIndifferentAccess.new.update(params)
+    def initialize_models
+      params = ActiveSupport::HashWithIndifferentAccess.new.update(self.params)
       model_definitions.each do |definition|
-        model = send("#{definition[:name]}")
-        model.attributes = params[self.class.model_name.singular][definition[:name]]
+        model_name = definition[:name]
+        model = send("#{model_name}")
+        persisted_model_params = storage[model_name] || ActiveSupport::HashWithIndifferentAccess.new
+        model.attributes = persisted_model_params.merge(params[form_name][model_name] || {})
       end
     end
 

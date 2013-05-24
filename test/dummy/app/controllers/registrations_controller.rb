@@ -5,13 +5,18 @@ class RegistrationsController < ApplicationController
     models :user, [:address, Address]
 
     step :user do |s|
+      s.apply_validations :user, :name, :phone, :sex, :age
     end
 
     step :address do |s|
+      s.apply_validations :address, :street_address, :city, :country, :postcode
     end
 
     def process
-      # Do nothing for now
+      return unless last_step?
+
+      user = User.create!(self.user.attributes)
+      address = Address.create!(self.user.attributes.merge(:user => user))
     end
   end
 
@@ -22,6 +27,8 @@ class RegistrationsController < ApplicationController
   def create
     @form = RegistrationForm.new(self, params)
 
+    # binding.pry
+
     if @form.valid?
       @form.save
 
@@ -31,7 +38,6 @@ class RegistrationsController < ApplicationController
       else
         @form.advance
       end
-
     end
 
     render :new
