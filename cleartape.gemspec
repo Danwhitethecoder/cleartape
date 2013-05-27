@@ -4,8 +4,8 @@ require File.expand_path('../lib/cleartape/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Tomasz Szymczyszyn"]
   gem.email         = ["tomasz.szymczyszyn@gmail.com"]
-  gem.description   = %q{}
-  gem.summary       = %q{}
+  gem.description   = %q{Cleartape allows to simplify model layer by moving parts of validation logic to form objects.}
+  gem.summary       = %q{Multistep form objects with validations defined per step.}
   gem.homepage      = "http://github.com/kammerer/cleartape"
 
   gem.files         = Array(Dir.glob("lib/**/*.rb")) + ["MIT-LICENSE", "Rakefile", "README.md"]
