@@ -156,6 +156,10 @@ The views for subsequent steps:
 
 ## What's left
 
+* Collection handling
+* Form builder integration
+
+
 ## Contributing
 
 1. Fork it
@@ -164,6 +168,6 @@ The views for subsequent steps:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-Finally, we'd really like your feedback
+Finally, I'd really like your feedback!
 
 
