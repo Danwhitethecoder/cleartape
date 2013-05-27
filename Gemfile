@@ -4,7 +4,6 @@ gemspec
 
 group :development do
   gem 'rake'
-  gem 'rspec'
 
   platform :ruby do
     gem 'sqlite3'

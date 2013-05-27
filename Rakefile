@@ -10,11 +10,6 @@ end
 Bundler.require
 Bundler::GemHelper.install_tasks
 
-require 'rspec'
-require 'rspec/core/rake_task'
-
-RSpec::Core::RakeTask.new(:spec)
-
 require 'rake/testtask'
 
 Rake::TestTask.new(:test) do |t|
@@ -24,5 +19,5 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = false
 end
 
-task :default => :spec
+task :default => :test
 
