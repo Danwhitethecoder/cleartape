@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require "cleartape/form/name"
 require "cleartape/form/naming"
 require "cleartape/form/step"
 require "cleartape/form/model"
@@ -83,14 +82,6 @@ module Cleartape
       end
     end
 
-    def self.model_name
-      Name.build(self)
-    end
-
-    def self.prevent_direct_use(exception_class = ArgumentError)
-      fail exception_class, "Cleartape::Form must not be used directly but subclassed"
-    end
-
     def valid?
       valid = models.all?(&:valid?)
 
@@ -109,9 +100,14 @@ module Cleartape
 
     def save
       return false unless valid?
-      process
-      storage.clear if last_step?
-      return true
+      if last_step?
+        process
+        storage.clear
+        return true
+      else
+        advance
+        return false
+      end
     end
 
     def step?(name)
@@ -122,13 +118,14 @@ module Cleartape
       step == self.class.steps.last.name
     end
 
+    private
+
     def advance
+      fail "Last step already reached!" if last_step?
       step_names = self.class.steps.map(&:name)
       idx = step_names.index(step)
       @step = storage[:__step__] = step_names[idx + 1]
     end
-
-    private
 
     def storage
       Storage.new(self)

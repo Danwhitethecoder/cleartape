@@ -1,6 +1,6 @@
 # Cleartape
 
-Cleartape provides an alternative to [ActiveRecord::NestedAttributes#accepts_nested_attributes_for](http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html#method-i-accepts_nested_attributes_for) in the form of, well, a Form! It is heavily inspired by ["redtape"](https://github.com/ClearFit/redtape) gem which in turn was inspired by ["7 Ways to Decompose Fat Activerecord Models"](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/) by [Bryan Helmkamp](https://github.com/brynary).
+Cleartape provides an alternative to [ActiveRecord::NestedAttributes#accepts_nested_attributes_for](http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html#method-i-accepts_nested_attributes_for) in the form of, well, a Form! It is inspired by ["redtape"](https://github.com/ClearFit/redtape) gem and ["7 Ways to Decompose Fat Activerecord Models"](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/) by [Bryan Helmkamp](https://github.com/brynary).
 
 In a nutshell, `accepts_nested_attributes_for` tightly couples your View to your Model. This is highly undesirable as it makes both harder to maintain. Instead, the Form mediates between the two, acting like an ActiveModel from the View and Controller's perspective but acting a proxy to the model layer.
 
@@ -9,7 +9,6 @@ In a nutshell, `accepts_nested_attributes_for` tightly couples your View to your
 * Flexibility - you handle mapping of form data into ActiveRecord objects
 * Infers validations from ActiveRecord objects or define them independently
 * Conditional validations make multistep forms easy without complicating model layer
-* Plays nicely with client_side_validations gem
 
 ## Missing features
 
@@ -67,19 +66,20 @@ The form itself:
 ```ruby
 class UserForm < Cleartape::Form
 
-  models :user
+  models :user, :gizmo
 
   step :basics do |s|
-    s.apply_validations :user, :email, :phone, :uniqueness => false 
+    s.uses :user, :email, :phone # Use all validations for User#email and User#email
   end
 
   step :details do |s|
-    s.apply_validations :user, :sex, :age
+    s.uses :user, :sex, :age, :numericality => false # Use all validations except :numericality
   end
 
   step :gizmo do |s|
-    s.apply_validations :gizmo, :name
-    s.validates :user, :description, :presence => true, :length => { :minimum => 50, :maximum => 200 }
+    s.uses :gizmo, :name
+    s.validates :gizmo, :description, :presence => true,                                 # Add completely custom
+                                      :length => { :minimum => 50, :maximum => 200 }     # validations
   end
 
   private
@@ -87,14 +87,12 @@ class UserForm < Cleartape::Form
   # This is where you put your logic, that is anything you want to do with
   # collected user input, i.e. associate and persist your models.
   #
-  # Cleartape calls +process+ from +save+ if validations pass. Then advances
-  # to next step.
+  # Calling +save+ advances the form if validations pass. On last step +process+
+  # is called from +save+.
   #
   def process
-    return unless last_step?
-
-    @user = User.create!(attributes[:user])
-    @gizmo = Gizmo.create!(attributes[:gizmo].merge(:user => @user))
+    user = User.create!(self.user.attributes)
+    gizmo = Gizmo.create!(self.gizmo.attributes.merge(:user => user))
   end
 
 end
@@ -110,9 +108,9 @@ class UsersController
 
   def create
     @form = UserForm.new(self, params)
-    if @form.save && @form.last_step?
-      flash[:notice] = "Hurrah!"
-      redirect_to user_url(@form.user)
+
+    if @form.save
+      redirect_to user_url(@form.user, :notice => "Hurrah!")
     else
       render
     end
@@ -130,7 +128,7 @@ The views for subsequent steps:
   = form.fields_for :user do |fields|
     = fields.text_field :email
     = fields.text_field :phone
-  
+
   = form.submit
 ```
 

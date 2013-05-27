@@ -18,6 +18,7 @@ module Cleartape
       include ActiveModel::Dirty
       include ActiveModel::Conversion
 
+      module Faux; end # Placeholder for faux model classes
 
       def self.derive(source_class)
         raise ArgumentError if source_class.nil?
@@ -27,7 +28,7 @@ module Cleartape
         # FIXME redefinition of constants causes warnings
         # remove_const(source_class.name) if const_defined?(source_class.name)
         silence_warnings do
-          const_set(source_class.name, faux_class) # Faux model needs a name for validations to work as expected
+          Faux.const_set(source_class.name, faux_class) # Faux model needs a name for validations to work as expected
         end
 
         needless_attrs = %w(id created_at updated_at).map(&:to_sym)

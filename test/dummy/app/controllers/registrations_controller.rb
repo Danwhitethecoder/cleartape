@@ -1,3 +1,6 @@
+
+require "pry"
+
 class RegistrationsController < ApplicationController
 
   class RegistrationForm < Cleartape::Form
@@ -5,18 +8,18 @@ class RegistrationsController < ApplicationController
     models :user, [:address, Address]
 
     step :user do |s|
-      s.apply_validations :user, :name, :phone, :sex, :age
+      s.uses :user, :name, :phone, :sex, :age
     end
 
     step :address do |s|
-      s.apply_validations :address, :street_address, :city, :country, :postcode
+      s.uses :address, :street_address, :city, :country, :postcode
     end
 
     def process
       return unless last_step?
 
-      user = ::User.create!(self.user.attributes)
-      address = ::Address.create!(self.address.attributes.merge(:user => user, :name => user.name))
+      user = User.create!(self.user.attributes)
+      address = Address.create!(self.address.attributes.merge(:user => user, :name => user.name))
     end
   end
 
@@ -27,15 +30,9 @@ class RegistrationsController < ApplicationController
   def create
     @form = RegistrationForm.new(self, params)
 
-    if @form.valid?
-      @form.save
-
-      if @form.last_step?
-        redirect_to root_url
-        return
-      else
-        @form.advance
-      end
+    if @form.save
+      redirect_to root_url
+      return
     end
 
     render :new

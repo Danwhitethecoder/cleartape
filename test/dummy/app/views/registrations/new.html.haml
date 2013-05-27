@@ -4,7 +4,7 @@
 
   = f.hidden_field :storage_key
 
-  - unless @form.valid?
+  - if @form.errors.present?
     %ul
       - @form.errors.full_messages.each do |message|
         %li= message
