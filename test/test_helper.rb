@@ -7,8 +7,10 @@ require "rails/test_help"
 require "pry"
 require "shoulda/context"
 require "capybara/rails"
+require "coveralls"
 
 Rails.backtrace_cleaner.remove_silencers!
+Coveralls.wear!
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
