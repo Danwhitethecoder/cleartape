@@ -30,8 +30,7 @@ module Cleartape
       @params = params
       @step = storage[:__step__].try(:to_sym) || self.class.steps.first.name
 
-      storage.data.merge!(params[form_name] || {})
-
+      storage.update(params)
       instantiate_models
     end
 

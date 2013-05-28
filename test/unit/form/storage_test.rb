@@ -15,6 +15,15 @@ class Cleartape::Form::StorageTest < Cleartape::TestCase
       assert_equal 1, Cleartape::Form::Storage.new(form).data[:foo]
       assert_equal 2, Cleartape::Form::Storage.new(form).data[:bar]
     end
+
+    should "not overwrite model params" do
+      storage = Cleartape::Form::Storage.new(form)
+      storage.update(form.form_name => { :model => { :attribute_1 => 1 } })
+      storage.update(form.form_name => { :model => { :attribute_2 => 2 } })
+
+      assert_equal 1, storage[:model][:attribute_1]
+      assert_equal 2, storage[:model][:attribute_2]
+    end
   end
 
 end

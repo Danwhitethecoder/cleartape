@@ -4,7 +4,7 @@ module Cleartape
   class Form
     class Storage
       def initialize(form)
-        @form_name = form.class.model_name.singular
+        @form_name = form.form_name
         @storage_key = form.storage_key
         @session = form.controller.session
       end
@@ -25,6 +25,15 @@ module Cleartape
 
       def clear
         @session.delete(:"__cleartape_#{@storage_key}__")
+      end
+
+      # TODO should allow for deep merge
+      def update(params)
+        params = params[@form_name] || {}
+        params.each do |model_name, model_params|
+          data[model_name] ||= ActiveSupport::HashWithIndifferentAccess.new
+          data[model_name].merge!(model_params) if model_params.is_a?(Hash)
+        end
       end
     end
   end
