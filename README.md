@@ -1,5 +1,6 @@
 # Cleartape
 
+[![Build Status](https://travis-ci.org/kammerer/cleartape.png)](https://travis-ci.org/kammerer/cleartape)
 [![Code Climate](https://codeclimate.com/github/kammerer/cleartape.png)](https://codeclimate.com/github/kammerer/cleartape)
 
 Cleartape provides an alternative to [ActiveRecord::NestedAttributes#accepts_nested_attributes_for](http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html#method-i-accepts_nested_attributes_for) in the form of, well, a Form! It is inspired by ["redtape"](https://github.com/ClearFit/redtape) gem and ["7 Ways to Decompose Fat Activerecord Models"](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/) by [Bryan Helmkamp](https://github.com/brynary).
