@@ -2,8 +2,10 @@ source 'https://rubygems.org'
 
 gemspec
 
-group :development do
+group :development, :test do
   gem 'rake'
+  gem 'pry'
+  gem 'pry-nav'
 
   platform :ruby do
     gem 'sqlite3'
@@ -14,9 +16,9 @@ group :development do
   end
 end
 
-group :development, :test do
-  gem 'pry'
-  gem 'pry-nav'
+group :test do
+  gem 'shoulda', '~> 3.5.0'
+  gem 'capybara', '~> 2.1.0'
 end
 
 gem 'haml'
