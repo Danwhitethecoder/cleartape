@@ -8,6 +8,10 @@ module Cleartape
     module Naming
       extend ActiveSupport::Concern
 
+      def form_name
+        @form_name ||= self.class.model_name.singular
+      end
+
       def to_key
         nil
       end
