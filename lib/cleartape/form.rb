@@ -24,7 +24,7 @@ module Cleartape
     attr_reader :controller, :step, :params
 
     def initialize(controller, params = {})
-      raise NoStepsDefined, "It makes no sense with one step only" if self.class.steps.blank?
+      raise NoStepsDefined, "No steps defined!" if self.class.steps.blank?
 
       @controller = controller
       @params = params

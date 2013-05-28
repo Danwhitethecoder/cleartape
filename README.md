@@ -72,7 +72,7 @@ class UserForm < Cleartape::Form
   models :user, :gizmo
 
   step :basics do |s|
-    s.uses :user, :email, :phone # Use all validations for User#email and User#email
+    s.uses :user, :email, :phone # Use all validations for User#email and User#phone
   end
 
   step :details do |s|
@@ -124,37 +124,37 @@ end
 The views for subsequent steps:
 
 ```haml
-= form_for @form do |form|
+= form_for @form do |f|
   -# preserves user input between steps and tracks current step
-  = form.hidden_field :storage_key
+  = f.hidden_field :storage_key
 
-  = form.fields_for :user do |fields|
+  = f.fields_for @form.user do |fields|
     = fields.text_field :email
     = fields.text_field :phone
 
-  = form.submit
+  = f.submit
 ```
 
 ```haml
-= form_for @form do |form|
-  = form.hidden_field :persistence_token
+= form_for @form do |f|
+  = f.hidden_field :persistence_token
 
-  = form.fields_for :user do |fields|
+  = f.fields_for @form.user do |fields|
     = fields.select :sex, %w[male female other]
     = fields.text_field :age
 
-  = form.submit
+  = f.submit
 ```
 
 ```haml
-= form_for @form do |form|
-  = form.hidden_field :persistence_token
+= form_for @form do |f|
+  = f.hidden_field :persistence_token
 
-  = form.fields_for :gizmo do |fields|
+  = f.fields_for @form.gizmo do |fields|
     = fields.text_field :name
     = fields.text_area :description
 
-  = form.submit
+  = f.submit
 ```
 
 ## What's left

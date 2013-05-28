@@ -35,7 +35,7 @@ class RegistrationTest < ActionDispatch::IntegrationTest
       assert_equal root_path, current_path
     end
 
-    should "show validation messages" do
+    should "show validation messages in case of validation errors" do
       visit new_registration_path
       assert page.has_content?("User details")
 
@@ -53,7 +53,27 @@ class RegistrationTest < ActionDispatch::IntegrationTest
       assert page.has_content?("Sex is not included in the list")
       assert page.has_content?("Age can't be blank")
       assert page.has_content?("Age is not a number")
+    end
 
+    should "preserve user input in case of validation errors" do
+      visit new_registration_path
+      assert page.has_content?("User details")
+
+      page.within "#new_registration" do
+        fill_in_all :user, :name => "Zenon Benon"
+        choose "registration_user_sex_male"
+        click_button "Next"
+      end
+
+      assert_equal registrations_path, current_path
+
+      assert page.has_content?("User details")
+      assert ! page.has_content?("User address")
+
+      page.within "#new_registration" do
+        assert has_field?("registration[user][name]", :with => "Zenon Benon")
+        assert has_checked_field?("registration_user_sex_male")
+      end
     end
   end
 end

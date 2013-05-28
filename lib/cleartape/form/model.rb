@@ -12,6 +12,7 @@ module Cleartape
       include ActiveAttr::MassAssignment
       # TODO mass assignment security / strong parameters
 
+      extend ActiveModel::Translation
       extend ActiveModel::Naming
 
       include ActiveModel::Validations
@@ -39,6 +40,36 @@ module Cleartape
         accessible_attrs.each { |attr| faux_class.attribute(attr) }
 
         return faux_class
+      end
+
+      def self.model_name
+        Name.build(self)
+      end
+
+      def self.route_key(record_or_class)
+        # TODO handle record for update action
+        name = record_or_class.name
+
+        ActiveSupport::Inflector.demodulize(name).underscore.pluralize
+      end
+
+      def self.param_key(record_or_class)
+        # TODO handle record for update action
+        name = record_or_class.name
+
+        ActiveSupport::Inflector.demodulize(name).underscore
+      end
+
+      def self.partial_path(record_or_class)
+        route_key(record_or_class)
+      end
+
+      def self.i18n_scope
+        :cleartape
+      end
+
+      def self.lookup_ancestors
+        [self]
       end
 
       def persisted?

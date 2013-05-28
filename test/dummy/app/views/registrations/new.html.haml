@@ -10,7 +10,7 @@
         %li= message
 
   - if @form.step? :user
-    = f.fields_for :user do |fields|
+    = f.fields_for @form.user do |fields|
       = fields.label :name
       = fields.text_field :name
 
@@ -44,7 +44,7 @@
       %br
 
   - elsif @form.step? :address
-    = f.fields_for :address do |fields|
+    = f.fields_for @form.address do |fields|
       = fields.label :street_address
       = fields.text_field :street_address
 
