@@ -19,6 +19,7 @@ end
 group :test do
   gem 'shoulda', '~> 3.5.0'
   gem 'capybara', '~> 2.1.0'
+  gem 'simplecov', :require => false
   gem 'coveralls', :require => false
 end
 

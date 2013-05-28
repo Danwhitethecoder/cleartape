@@ -1,16 +1,22 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
+require "simplecov"
+require "coveralls"
+
+SimpleCov.start do
+  add_filter "/test/"
+end
+Coveralls.wear!
+
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require "rails/test_help"
 
 require "pry"
 require "shoulda/context"
 require "capybara/rails"
-require "coveralls"
 
 Rails.backtrace_cleaner.remove_silencers!
-Coveralls.wear!
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
