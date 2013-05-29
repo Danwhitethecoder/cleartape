@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/kammerer/cleartape.png)](https://codeclimate.com/github/kammerer/cleartape)
 [![Coverage Status](https://coveralls.io/repos/kammerer/cleartape/badge.png)](https://coveralls.io/r/kammerer/cleartape)
 
-Cleartape provides an alternative to [ActiveRecord::NestedAttributes#accepts_nested_attributes_for](http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html#method-i-accepts_nested_attributes_for) in the form of, well, a Form! It is inspired by ["redtape"](https://github.com/ClearFit/redtape) gem and ["7 Ways to Decompose Fat Activerecord Models"](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/) by [Bryan Helmkamp](https://github.com/brynary).
+Cleartape provides an alternative to [ActiveRecord::NestedAttributes#accepts_nested_attributes_for](http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html#method-i-accepts_nested_attributes_for) in the form of, well, a Form! It is inspired by [redtape](https://github.com/ClearFit/redtape) gem and [7 Ways to Decompose Fat Activerecord Models](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/) by [Bryan Helmkamp](https://github.com/brynary).
 
 In a nutshell, `accepts_nested_attributes_for` tightly couples your View to your Model. This is highly undesirable as it makes both harder to maintain. Instead, the Form mediates between the two, acting like an ActiveModel from the View and Controller's perspective but acting a proxy to the model layer.
 
