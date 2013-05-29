@@ -18,6 +18,12 @@ In a nutshell, `accepts_nested_attributes_for` tightly couples your View to your
 
 * Direct support for nested attributes - at present nesting needs to be handled explicitly
 
+## Demo
+
+See [cleartape-example](http://github.com/kammerer/cleartape-example). Live demo available
+at [cleartape-example.herokuapp.com](http://cleartape-example.herokuapp.com).
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
