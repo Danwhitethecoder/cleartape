@@ -144,7 +144,7 @@ The views for subsequent steps:
 
 ```haml
 = form_for @form do |f|
-  = f.hidden_field :persistence_token
+  = f.hidden_field :storage_key
 
   = f.fields_for @form.user do |fields|
     = fields.select :sex, %w[male female other]
@@ -155,7 +155,7 @@ The views for subsequent steps:
 
 ```haml
 = form_for @form do |f|
-  = f.hidden_field :persistence_token
+  = f.hidden_field :storage_key
 
   = f.fields_for @form.gizmo do |fields|
     = fields.text_field :name
