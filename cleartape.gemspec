@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "activesupport"
   gem.add_runtime_dependency "active_attr"
 
-  gem.add_dependency "rails", "~> 3.2.12"
+  gem.add_dependency "rails", "~> 3.2"
 
 end
 
