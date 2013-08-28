@@ -1,3 +1,6 @@
+**Work in progress!** This not yet a working code - feel free to comment though.
+
+
 # Cleartape
 
 [![Build Status](https://travis-ci.org/kammerer/cleartape.png)](https://travis-ci.org/kammerer/cleartape)
